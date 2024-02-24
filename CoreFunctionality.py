@@ -10,7 +10,7 @@ from binance.client import Client
 from binance.enums import *
 
 portion = 0.01
-minimumBnb = 0.03
+minimumBnb = 0.001
 
 def getMarketData(client, exclude):
     
@@ -74,6 +74,10 @@ def getMarketData(client, exclude):
 
 def threeCurrencyArb(tickers, minimumPercentage, startingBal):
     
+    if startingBal == 0:
+        print("A startingBal változó értéke nem lehet nulla.")
+        return
+
     btc = []
     found = False
     for i in tickers:
@@ -126,6 +130,9 @@ def threeCurrencyArb(tickers, minimumPercentage, startingBal):
                         ask3 = l['askPrice']
                         bid3 = l['bidPrice']
                         bid3qty = l['bidQty']
+
+                        
+                        
                         
                         if lmarker[0] == kmarker[1] and lmarker[1] == jmarker[1] and found == False:
                             
@@ -134,6 +141,9 @@ def threeCurrencyArb(tickers, minimumPercentage, startingBal):
                             step1 = (starting*0.999)/float(ask1)
                             step2 = (step1*0.999)*float(bid2)
                             step3 = (step2*0.999)*float(bid3)
+
+                        if starting != 0:
+                
                             
                             profitloss = (step3-starting)/starting
                             if profitloss > minimumPercentage:
@@ -147,6 +157,9 @@ def threeCurrencyArb(tickers, minimumPercentage, startingBal):
                                 output= [trade1,trade2,trade3,trade4,PL]
                                 results.append(output)
                                 #print("Route: " + j['symbol'] +' -> '+  k['symbol'] + ' -> '+ l['symbol'] + ' has profit/loss of ' + str(percentageGain) +"%")
+
+                            else:
+                                 print("A starting változó értéke nem lehet nulla.")
     return results
 
 def checkOpenOrders(client, market):
@@ -214,8 +227,10 @@ def executeTrade(client, market, currentAsset, tradeType, tradePrice, firstTrade
         order = client.order_market_sell(symbol=tradeMarket, quantity=qtySell)
         
     if tradeType == 1:# buy
-        
-        qtyBuy = balance/tradePrice
+        if tradePrice != 0:
+            qtyBuy = balance/tradePrice
+        else:
+            print("Hiba: A tradePrice értéke nulla!")
         
         if intmarket == True:
             qtyBuy = int(qtyBuy)

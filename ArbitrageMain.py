@@ -9,14 +9,14 @@ import time
 from binance.client import Client
 import CoreFunctionality as core
 
-api_key = 'api_key'
-api_secret = 'api_secret'
+api_key = 'JJRYho77n1cLNDslIMHeLtDuFfI5jifxBxtpWG1kuC6fDI6oNVmptrVU9ikLGqdC'
+api_secret = '9ExYk1H3ct2xaccjg17yqhvGvO1mvYcZdM8fk9JNCsiC6aIkGNdEAVkhUQNusH31'
 client = Client(api_key, api_secret)
 btcHistory = []
 profits = 0.001
 mode = 0
 previousMode = 0
-portion = 0.01
+portion = 1
 
 
 tradeRoute = []
@@ -30,14 +30,15 @@ currentAsset = 'BTC'
 while (mode <7):
     
     if mode == 0:
-        print("Finding Arbitrage Opportunities")
+        print("Arbitrázs lehetőségek keresése")
         data = core.getMarketData(client, True)
-        
         found = False
-        
+
         tradeRoute = core.threeCurrencyArb(data,profits,startingBalance)
-        if len(tradeRoute) > 0:
-            print("Trade Found")
+        print(tradeRoute)
+        if tradeRoute is not None and len(tradeRoute) > 0:
+        
+            print("Találtam egy albitrázst.")
             found = True
             mode=1
         
